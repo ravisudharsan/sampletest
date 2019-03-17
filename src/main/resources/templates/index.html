@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		getAllInfo();
+		alert("into getall");
+
+		function getAllInfo() {
+			$.ajax({
+				url : "http://localhost:8080/all",
+				method : "GET",
+				success : function(data) {
+					var txt = '';
+					for(var i=0; i<data.length;i++){
+						var btnTxt = "<td><button type=button id='editbtn'>Edit</button></td><td><button type=button id='deletebtn'>Del</button></td>";
+						var line = "<tr id="+data[i].id+"><td>"+data[i].name+"</td><td>"+data[i].category+"</td>"+btnTxt+"</tr>";
+						alert(line);
+						txt = txt + line;
+						console.log(data[i].name);
+					}
+					$("#tablepen").append(txt);
+					console.log(data);
+				},
+				error : function(error) {
+					alert("List error Occured");
+				}
+			});
+		}
+		$("#")
+		$("#savebtn").click(function() {
+			var jsonPen = {};
+			jsonPen.name = $('#addpen').val();
+			jsonPen.category = $('#addcategory').val();
+			var PenObj = JSON.stringify(jsonPen);
+			alert(PenObj);		
+			$.ajax({
+				url : "http://localhost:8080/insert",
+				method : "POST",
+				data : PenObj,
+				contentType : "application/json",
+				success : function(data) {
+					alert(data);
+					getAllInfo();
+				},
+				error : function(err) {
+					alert("save error");
+				}
+		});
+	});
+});	
+</script>
+</head>
+<body>
+	<h1>Welcome to Spring-Boot Example (Pen).</h1>
+	<table id="tablepen" border="1">
+		<tr>
+			<th>Pen Name</th>
+			<th>Category</th>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<input type="button" id="addbtn" value="Add">
+	<br>
+	<br>
+	<div id="adddiv">
+		Pen Name : <input type="text" id="addpen"> <br> <br>
+		Category : <input type="text" id="addcategory"> <br> <br>
+		<input type="button" id="savebtn" value="Save"> <input
+			type="button" id="cancelbtn" value="Cancel">
+	</div>
+</body>
+</html>
